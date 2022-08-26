@@ -2,3 +2,5 @@ GET http://localhost:3000
 ###
 GET http://localhost:3000/asdasd
 ###
+GET http://localhost:3000/api/posts
+###
