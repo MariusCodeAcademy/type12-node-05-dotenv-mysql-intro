@@ -7,6 +7,15 @@ const colors = require('colors');
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Config
+const dbConfig = {
+  host: 'localhost',
+  user: 'root',
+  password: '', // pas ka mamp 'root'
+  port: '3306', // mamp 8889
+  database: 'type12',
+};
+
 // Middleware
 app.use(morgan('dev'));
 
