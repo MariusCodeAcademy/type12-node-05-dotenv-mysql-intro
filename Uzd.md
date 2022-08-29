@@ -16,4 +16,4 @@
 
   5.5. GET /api/users/towns/kaunas - gauti vartotojus is miesto (kaunas dinaminis segmentas)
 
-  5.6. POST /api/users/ - sukurti nauja vartotoja is atsiustu duomenu
+  5.6. POST /api/users/ - sukurti nauja vartotoja is formos/rest/postman duomenu
