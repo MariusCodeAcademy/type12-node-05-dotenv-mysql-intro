@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
+const cors = require('cors');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const mysql = require('mysql2/promise');
@@ -11,6 +12,7 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(morgan('dev'));
+app.use(cors());
 // ijungiam gaunamus duomenis json formatu
 app.use(express.json());
 
