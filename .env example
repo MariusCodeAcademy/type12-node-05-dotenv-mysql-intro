@@ -1,3 +1,9 @@
-LOGIN=<your login>
-PASS=<your password>
-PORT=<your local port>
+
+DB_HOST=
+DB_USER=
+DB_PASSWORD=
+DB_PORT=
+DB_DATABASE=
+
+
+PORT=

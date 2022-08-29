@@ -4,5 +4,7 @@ GET http://localhost:3000/asdasd
 ###
 GET http://localhost:3000/api/posts
 ###
+GET http://localhost:3000/api/posts/50
+###
 GET http://localhost:3000/api/posts/order/asc
 ###

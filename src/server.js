@@ -4,18 +4,10 @@ const morgan = require('morgan');
 // eslint-disable-next-line no-unused-vars
 const colors = require('colors');
 const mysql = require('mysql2/promise');
+const { dbConfig } = require('./config');
 
 const app = express();
 const port = process.env.PORT || 5000;
-
-// Config
-const dbConfig = {
-  host: process.env.DB_HOST,
-  user: 'root',
-  password: '', // pas ka mamp 'root'
-  port: '3306', // mamp 8889
-  database: 'type12',
-};
 
 // Middleware
 app.use(morgan('dev'));
@@ -34,7 +26,7 @@ app.get('/api/posts/', async (req, res) => {
     console.log('Conected to DB'.bgGreen.bold);
     // 2. atlikti veiksma
     const sql = 'SELECT * FROM posts';
-    const [rows, fields] = await connection.query(sql);
+    const [rows] = await connection.query(sql);
     console.log('rows ===', rows);
     res.json(rows);
     // 3.uzdaryti prisijungima
@@ -46,9 +38,34 @@ app.get('/api/posts/', async (req, res) => {
   }
 });
 
+// single post route
+app.get('/api/posts/:pid', async (req, res) => {
+  // res.send('get single post');
+  const id = +req.params.pid;
+  try {
+    const conn = await mysql.createConnection(dbConfig);
+    const sql = 'SELECT * FROM posts WHERE id = ?';
+    // execute daro su prepared statments ir apsaugo nuo sql injection
+    const [rows] = await conn.execute(sql, [id]);
+    if (rows.length === 1) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).json({ msg: 'Post not found' });
+    }
+    // uzdarom prisijungima
+    conn.end();
+  } catch (error) {
+    console.log('Error Conecting to DB'.bgRed.bold, error);
+    // 4. gaudyti klaidas
+    res.status(500).json({ msg: 'something went worng' });
+  }
+});
+
+// GET /api/posts/category/movies - movies dalis dinamine, grazinam tik toje kagegorijoje esancius postus
+
 // GET /api/posts/order/desc - gauti postus isrikiuotus pagas varda
 // const sql = 'SELECT * FROM posts ORDER BY author DESC';
-app.get('/api/posts/order/:orderDirection', async (req, res) => {
+app.get('/api/posts/order/:orderDirection/', async (req, res) => {
   const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
   // const order = req.params.orderDirection;
   console.log('order ===', order);
@@ -75,7 +92,5 @@ app.use((req, res) => {
     msg: 'Not found',
   });
 });
-
-console.log('process.env.LOGIN ===', process.env.LOGIN);
 
 app.listen(port, () => console.log(`server is running on port ${port}`.bgYellow.bold));
