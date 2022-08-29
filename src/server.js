@@ -48,6 +48,26 @@ app.get('/api/posts/', async (req, res) => {
 
 // GET /api/posts/order/desc - gauti postus isrikiuotus pagas varda
 // const sql = 'SELECT * FROM posts ORDER BY author DESC';
+app.get('/api/posts/order/:orderDirection', async (req, res) => {
+  const order = req.params.orderDirection === 'desc' ? 'DESC' : 'ASC';
+  // const order = req.params.orderDirection;
+  console.log('order ===', order);
+  try {
+    // 1. prisijungti prie db
+    const connection = await mysql.createConnection(dbConfig);
+    // console.log('Conected to DB'.bgGreen.bold);
+    // 2. atlikti veiksma
+    const sql = `SELECT * FROM posts ORDER BY author ${order}`;
+    const [rows] = await connection.query(sql);
+    res.json(rows);
+    // 3.uzdaryti prisijungima
+    connection.end();
+  } catch (error) {
+    console.log('Error Conecting to DB'.bgRed.bold, error);
+    // 4. gaudyti klaidas
+    res.status(500).json({ msg: 'something went worng' });
+  }
+});
 
 // GET /api/posts/order/desc - desc dalis butu dinamine galimos reiksmes asc|desc
 app.use((req, res) => {
