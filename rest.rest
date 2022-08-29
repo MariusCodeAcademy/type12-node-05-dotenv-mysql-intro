@@ -3,6 +3,17 @@ GET http://localhost:3000
 GET http://localhost:3000/asdasd
 ###
 GET http://localhost:3000/api/posts
+
+### Create a new post
+POST http://localhost:3000/api/posts
+Content-Type: application/json
+
+{
+  "author": "Mike Tyson",
+  "body": "The last and first punch",
+  "category": "movies"
+}
+
 ###
 GET http://localhost:3000/api/posts/50
 ###

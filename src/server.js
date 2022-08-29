@@ -11,6 +11,8 @@ const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(morgan('dev'));
+// ijungiam gaunamus duomenis json formatu
+app.use(express.json());
 
 // connect(process.env.LOGIN, process.env.PASS)
 
@@ -31,6 +33,27 @@ app.get('/api/posts/', async (req, res) => {
     res.json(rows);
     // 3.uzdaryti prisijungima
     connection.end();
+  } catch (error) {
+    console.log('Error Conecting to DB'.bgRed.bold, error);
+    // 4. gaudyti klaidas
+    res.status(500).json({ msg: 'something went worng' });
+  }
+});
+
+// POST /api/posts/ - paduoti author, body, category
+app.post('/api/posts/', async (req, res) => {
+  // where is author???
+  console.log('req.body ===', req.body);
+  const { author, body, category } = req.body;
+  try {
+    const conn = await mysql.createConnection(dbConfig);
+    const sql = 'INSERT INTO posts ( author, body, category) VALUES (?, ?, ?)';
+    const [rows] = await conn.execute(sql, [author, body, category]);
+    if (rows.affectedRows === 1) {
+      res.status(201).json({ msg: 'Post created' });
+    } else {
+      throw new Error('no rows affected');
+    }
   } catch (error) {
     console.log('Error Conecting to DB'.bgRed.bold, error);
     // 4. gaudyti klaidas
@@ -94,3 +117,7 @@ app.use((req, res) => {
 });
 
 app.listen(port, () => console.log(`server is running on port ${port}`.bgYellow.bold));
+
+// prisidedam public direktorija
+// indexe forma su author body ir category
+// surenkam inputus ir kuriam nauja posta
